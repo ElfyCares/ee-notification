@@ -1,0 +1,75 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymerfire/firebase.html">
+<link rel="import" href="../polymerfire/firebase-auth.html">
+<link rel="import" href="../polymerfire/firebase-app.html">
+<link rel="import" href="../polymerfire/firebase-query.html">
+
+<!--
+`ee-notification`
+Notification dropdown and methods
+
+@demo demo/index.html
+-->
+
+<dom-module id="ee-notification">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <div class="">
+      FIREEEEE
+    </div>
+    <firebase-app
+      auth-domain="elfycaresdev.firebaseapp.com"
+      database-url="https://elfycaresdev.firebaseio.com/"
+      api-key="AIzaSyCG3wFd5r2wGfkrTxg7uLEkezobP9dPqRs"
+      app="{{app}}">
+    </firebase-app>
+    <firebase-auth id="auth" user="{{user}}" app="[[app]]" provider="google"></firebase-auth>
+
+    <firebase-query
+      id="query"
+      app="[[app]]"
+      path="/users/16/notification"
+      data="{{data}}">
+    </firebase-query>
+
+    <template is="dom-repeat" items="[[data]]" index-as="index">
+      <div class="">
+        [[item.url]]
+      </div>
+    </template>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'ee-notification',
+
+      properties: {
+        data: {
+          type: Array,
+          value() { return [] },
+        },
+      },
+
+      attached() {
+        this.async(function() {
+          var token = 'eyJ0eXAiOiAiSldUIiwgImFsZyI6ICJSUzI1NiJ9.eyJpc3MiOiAiZmlyZWJhc2UtYWRtaW5zZGstdjd4MDNAZWxmeWNhcmVzZGV2LmlhbS5nc2VydmljZWFjY291bnQuY29tIiwgInN1YiI6ICJmaXJlYmFzZS1hZG1pbnNkay12N3gwM0BlbGZ5Y2FyZXNkZXYuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCAiYXVkIjogImh0dHBzOi8vaWRlbnRpdHl0b29sa2l0Lmdvb2dsZWFwaXMuY29tL2dvb2dsZS5pZGVudGl0eS5pZGVudGl0eXRvb2xraXQudjEuSWRlbnRpdHlUb29sa2l0IiwgInVpZCI6ICIxNiIsICJqdGkiOiAiRlF0NGlQU0szV19HVHVHcFVnZGZHdz09IiwgIm5iZiI6IDE0ODA3OTU4ODksICJpYXQiOiAxNDgwNzk1ODg5LCAiZXhwIjogMTQ4MDc5OTQ4OX0.tKeox3EqsH4fsdSdsy-cUWCpAxRuCW0URgI6pHmUW6KHF8fPxMoEJ0HXyAXCuQHUFenuR65YxbrkNqbmnGC8655SNElbod32NHseaxPltDqoBA7qe8pK6ZOeLfk3y64sTSoumNA88QqlgiFSXfvHzWX4yrXtGpskTKb-0x-U9ZmKFzqxByrfobgoZG9_5au5JZ9rpMfo4SI-TcFXLhx_9LEyGSOkQjcmKoq3kWL0dIIzdxmAZaBnd4IRZ1Ow_oaW7gdPmvuPh9aSPFIhJeEkuyk6UuRpB2mtLLcXU_En1bbtl6N5kKcEV7R2-A6bm5bXQFD-an_Us_dgpWkuLFGhKQ'
+          this.$.auth.signInWithCustomToken(token).catch(function(error) {
+            // Handle Errors here.
+            debugger
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // ...
+          });
+        }.bind(this), 1000)
+
+      }
+
+    });
+  </script>
+</dom-module>
