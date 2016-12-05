@@ -2,10 +2,13 @@
 
 <!-- Elfy -->
 <link rel="import" href="../elfy-api/elfy-api.html">
+<link rel="import" href="../ee-shared-styles/shared-styles.html">
 
+<!-- Firebase -->
 <link rel="import" href="../polymerfire/firebase-app.html">
 <link rel="import" href="../polymerfire/firebase-auth.html">
 
+<!-- My -->
 <link rel="import" href="ee-generic-notification.html">
 <link rel="import" href="ee-inbox-notification.html">
 
@@ -18,6 +21,7 @@ Notification dropdown and methods
 
 <dom-module id="ee-notification">
   <template>
+    <style include="shared-styles"></style>
 
     <firebase-app
       auth-domain="[[authDomain]]"
@@ -35,17 +39,22 @@ Notification dropdown and methods
       on-change-route="_changeRoute">
     </firebase-auth>
 
-    <template is="dom-if" if="[[generic]]" restamp="true">
-      <ee-generic-notification me="[[me]]"
-       firebase-app="[[firebaseApp]]" signed-in="[[signedIn]]"></ee-generic-notification>
-    </template>
+    <div class="h-c">
+      <template is="dom-if" if="[[generic]]" restamp="true">
+        <ee-generic-notification me="[[me]]"
+         firebase-app="[[firebaseApp]]" signed-in="[[signedIn]]"></ee-generic-notification>
+      </template>
 
-    <template is="dom-if" if="[[inbox]]" restamp="true">
-      <ee-inbox-notification me="[[me]]"
-       firebase-app="[[firebaseApp]]"
-       signed-in="[[signedIn]]"
-       on-change-route="_changeRoute"></ee-inbox-notification>
-    </template>
+      <template is="dom-if" if="[[inbox]]" restamp="true">
+        <ee-inbox-notification me="[[me]]"
+         firebase-app="[[firebaseApp]]"
+         signed-in="[[signedIn]]"
+         on-change-route="_changeRoute"
+         auto-read-channel-id="[[autoReadChannelId]]"
+         disable-auto-read-channel="[[disableAutoReadChannel]]">
+        </ee-inbox-notification>
+      </template>
+    </div>
 
   </template>
   <script>
@@ -66,6 +75,15 @@ Notification dropdown and methods
         authDomain: {
           type: String,
           value: '',
+        },
+
+        autoReadChannelId: {
+          type: Number,
+        },
+
+        disableAutoReadChannel: {
+          type: Boolean,
+          value: false
         },
 
         me: {

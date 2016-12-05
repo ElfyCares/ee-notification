@@ -118,14 +118,23 @@ Notification dropdown and methods
 
       properties: {
 
-        unreadCount: {
-          type: Number,
-          value: 0,
-        },
-
         firebaseApp: {
           type: Object,
           value() { return {} },
+        },
+
+        autoReadChannelId: {
+          type: Number,
+        },
+
+        disableAutoReadChannel: {
+          type: Boolean,
+          value: false
+        },
+
+        unreadCount: {
+          type: Number,
+          value: 0,
         },
 
         channels: {
@@ -161,8 +170,36 @@ Notification dropdown and methods
       },
 
       observers: [
-        '_notificationsChanged(channels, channels.*)'
+        '_notificationsChanged(channels, channels.*)',
+        '_autoRead(autoReadChannelId, disableAutoReadChannel, channels, channels.*)'
       ],
+
+      _autoRead(autoReadChannelId, disableAutoReadChannel, channels) {
+        if (disableAutoReadChannel || !autoReadChannelId) return
+
+        var channelToAutoReadIndex
+        var channelToAutoRead
+
+        channels.forEach((e,i) => {
+          if (e.$key == autoReadChannelId) {
+            channelToAutoReadIndex = i
+            channelToAutoRead = e
+          }
+        })
+        if (!channelToAutoRead || channelToAutoReadIndex) return
+
+        var notifications = this._arrayFromObject(channelToAutoRead)
+
+        var keys = []
+        notifications.forEach((n)=> {
+          if (typeof n[1] === 'object') {
+            keys.push(n[0])
+          }
+        })
+        keys.forEach((k) => {
+          this.set('channels.' + channelToAutoReadIndex + '.' + k + '.read', true)
+        })
+      },
 
       _notificationsChanged(channels) {
         var arr = []
@@ -182,7 +219,6 @@ Notification dropdown and methods
         arr.forEach((c) => {
           var notifications = this._arrayFromObject(c)
           notifications.forEach((n)=> {
-
             if (typeof n[1] === 'object' && !n[1].read) {
               unreadCount ++
             }
