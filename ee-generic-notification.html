@@ -14,8 +14,6 @@
 <link rel="import" href="../paper-material/paper-material.html">
 
 <!-- Third -->
-<link rel="import" href="../polymerfire/firebase.html">
-<link rel="import" href="../polymerfire/firebase-auth.html">
 <link rel="import" href="../polymerfire/firebase-query.html">
 
 <!-- My -->
@@ -85,14 +83,6 @@ Notification dropdown and methods
       </div>
     </iron-dropdown>
 
-    <firebase-auth
-      id="auth"
-      user="{{firebaseUser}}"
-      app="[[app]]"
-      provider="google"
-      signed-in="{{signedIn}}">
-    </firebase-auth>
-
     <firebase-query
       id="query"
       app="[[app]]"
@@ -146,10 +136,6 @@ Notification dropdown and methods
           value: false,
         },
 
-        _firebaseCustomToken: {
-          type: String,
-        },
-
         _notificationPath: {
           type: String,
           value: '',
@@ -158,8 +144,6 @@ Notification dropdown and methods
       },
 
       observers: [
-        'reloadToken(me)',
-        '_authApp(_firebaseCustomToken)',
         '_notificationsChanged(notifications, notifications.*)'
       ],
 
@@ -170,25 +154,8 @@ Notification dropdown and methods
         this.set('notificationsSorted', arr)
       },
 
-      _authApp(firebaseCustomToken) {
-        if (!firebaseCustomToken || firebaseCustomToken == '') return
-        this.$.auth.signInWithCustomToken(firebaseCustomToken).catch(function(error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          console.error(error)
-        });
-      },
-
       _getDocumentPath(key) {
         return this._notificationPath + '/' + key
-      },
-
-      reloadToken() {
-        if (!this._firebaseCustomToken || this._firebaseCustomToken == '') return
-        App.NotificationSetting.findAll().then((settings) => {
-          this._firebaseCustomToken = settings.firebaseCustomToken
-        })
       },
 
       _computeNotificationPath(me) {

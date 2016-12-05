@@ -1,8 +1,20 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- Elfy -->
+<link rel="import" href="../elfy-api/elfy-api.html">
 
 <link rel="import" href="../polymerfire/firebase-app.html">
+<link rel="import" href="../polymerfire/firebase-auth.html">
 
 <link rel="import" href="ee-generic-notification.html">
 <link rel="import" href="ee-inbox-notification.html">
+
+<!--
+`ee-notification`
+Notification dropdown and methods
+
+@demo demo/index.html
+-->
 
 <dom-module id="ee-notification">
   <template>
@@ -14,11 +26,19 @@
       app="{{firebaseApp}}">
     </firebase-app>
 
+    <firebase-auth
+      id="auth"
+      user="{{firebaseUser}}"
+      app="[[firebaseApp]]"
+      provider="google"
+      signed-in="{{signedIn}}">
+    </firebase-auth>
+
     <ee-generic-notification me="[[me]]"
-     firebase-app="[[firebaseApp]]"></ee-generic-notification>
+     firebase-app="[[firebaseApp]]" signed-in="[[signedIn]]"></ee-generic-notification>
 
      <ee-inbox-notification me="[[me]]"
-      firebase-app="[[firebaseApp]]"></ee-inbox-notification>
+      firebase-app="[[firebaseApp]]" signed-in="[[signedIn]]"></ee-inbox-notification>
 
   </template>
   <script>
@@ -45,7 +65,34 @@
           type: Object,
           value() { return {} },
         },
-      }
+
+        _firebaseCustomToken: {
+          type: String,
+        },
+      },
+
+      observers: [
+        'reloadToken(me)',
+        '_authApp(_firebaseCustomToken)',
+      ],
+
+      reloadToken() {
+        if (!this._firebaseCustomToken || this._firebaseCustomToken == '') return
+        App.NotificationSetting.findAll().then((settings) => {
+          this._firebaseCustomToken = settings.firebaseCustomToken
+        })
+      },
+
+      _authApp(firebaseCustomToken) {
+        if (!firebaseCustomToken || firebaseCustomToken == '') return
+        this.$.auth.signInWithCustomToken(firebaseCustomToken).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.error(error)
+        });
+      },
+
     });
   </script>
 </dom-module>
