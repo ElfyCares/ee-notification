@@ -54,20 +54,36 @@ Notification dropdown and methods
           type: Array,
           value() { return [] },
         },
+
+        me: {
+          type: Object,
+          value() { return {} },
+        },
       },
 
       attached() {
         this.async(function() {
-          var token = 'eyJ0eXAiOiAiSldUIiwgImFsZyI6ICJSUzI1NiJ9.eyJpc3MiOiAiZmlyZWJhc2UtYWRtaW5zZGstdjd4MDNAZWxmeWNhcmVzZGV2LmlhbS5nc2VydmljZWFjY291bnQuY29tIiwgInN1YiI6ICJmaXJlYmFzZS1hZG1pbnNkay12N3gwM0BlbGZ5Y2FyZXNkZXYuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCAiYXVkIjogImh0dHBzOi8vaWRlbnRpdHl0b29sa2l0Lmdvb2dsZWFwaXMuY29tL2dvb2dsZS5pZGVudGl0eS5pZGVudGl0eXRvb2xraXQudjEuSWRlbnRpdHlUb29sa2l0IiwgInVpZCI6ICIxNiIsICJqdGkiOiAiRlF0NGlQU0szV19HVHVHcFVnZGZHdz09IiwgIm5iZiI6IDE0ODA3OTU4ODksICJpYXQiOiAxNDgwNzk1ODg5LCAiZXhwIjogMTQ4MDc5OTQ4OX0.tKeox3EqsH4fsdSdsy-cUWCpAxRuCW0URgI6pHmUW6KHF8fPxMoEJ0HXyAXCuQHUFenuR65YxbrkNqbmnGC8655SNElbod32NHseaxPltDqoBA7qe8pK6ZOeLfk3y64sTSoumNA88QqlgiFSXfvHzWX4yrXtGpskTKb-0x-U9ZmKFzqxByrfobgoZG9_5au5JZ9rpMfo4SI-TcFXLhx_9LEyGSOkQjcmKoq3kWL0dIIzdxmAZaBnd4IRZ1Ow_oaW7gdPmvuPh9aSPFIhJeEkuyk6UuRpB2mtLLcXU_En1bbtl6N5kKcEV7R2-A6bm5bXQFD-an_Us_dgpWkuLFGhKQ'
-          this.$.auth.signInWithCustomToken(token).catch(function(error) {
-            // Handle Errors here.
-            debugger
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // ...
-          });
-        }.bind(this), 1000)
+          var token = '1eyJ0eXAiOiAiSldUIiwgImFsZyI6ICJSUzI1NiJ9.eyJpc3MiOiAiZmlyZWJhc2UtYWRtaW5zZGstdjd4MDNAZWxmeWNhcmVzZGV2LmlhbS5nc2VydmljZWFjY291bnQuY29tIiwgInN1YiI6ICJmaXJlYmFzZS1hZG1pbnNkay12N3gwM0BlbGZ5Y2FyZXNkZXYuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCAiYXVkIjogImh0dHBzOi8vaWRlbnRpdHl0b29sa2l0Lmdvb2dsZWFwaXMuY29tL2dvb2dsZS5pZGVudGl0eS5pZGVudGl0eXRvb2xraXQudjEuSWRlbnRpdHlUb29sa2l0IiwgInVpZCI6ICIxNiIsICJqdGkiOiAidHVuQllkYVA3VVdfUFdHcDdMV1l0dz09IiwgIm5iZiI6IDE0ODA5MzI4NDMsICJpYXQiOiAxNDgwOTMyODQzLCAiZXhwIjogMTQ4MDkzNjQ0M30.qe9iV6JJvn_7i3j9fAEVMSk3zOrfuRQn0qKmFxMHiXwsvSHKeTUN-PkjZCyZ7C7-1KgFcKXK5guwLjaADHuGMUQ3h5P1GWsb3vq4MdZPQuk-z5FOt8MNPWjVPZ45LpIoF69Bc9K3dWhrnoR2OO99BWATpWwQRi2WRVNLRB4CWhI4ljEnp-8DoxxhiJvpVGJs6KlTrw0J_TzXPKfcSUxUXntfPCkoPp2cHcRKj0vmApZeDerdaiGJgthNBycJHU55N8E7_rgO75XLT2BTND3YHknJDGf7ZU1xgj4KXQ45j1T_lqr_tTSc3_mTSSg4xnPnpqNkyhCSvfYMYc-8gMj8jQ'
+          this.signIn()
+        }.bind(this))
+      },
 
+      signIn() {
+        if (!me || !me.)
+        this.$.auth.signInWithCustomToken(token).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          if (errorCode == 'auth/invalid-custom-token') {
+            this.reloadToken()
+          }
+        });
+      },
+
+      reloadToken() {
+        App.User.me().then((me) => {
+          this.me = me
+        })
       }
 
     });
