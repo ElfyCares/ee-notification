@@ -72,7 +72,7 @@ Notification dropdown and methods
           <span>Notifications</span>
         </div>
         <div class="notification-list">
-          <iron-list id="list" items="[[notifications]]" as="notification">
+          <iron-list id="list" items="[[notificationsSorted]]" as="notification">
             <template>
               <notification-row
                 app="[[app]]"
@@ -107,7 +107,8 @@ Notification dropdown and methods
       path="[[_notificationPath]]"
       data="{{notifications}}"
       disabled="[[!signedIn]]"
-      limit-to-first="100">
+      limit-to-last="50"
+      order-by-child="created_at">
     </firebase-query>
 
   </template>
@@ -135,6 +136,11 @@ Notification dropdown and methods
         },
 
         notifications: {
+          type: Array,
+          value() { return [] },
+        },
+
+        notificationsSorted: {
           type: Array,
           value() { return [] },
         },
@@ -167,8 +173,16 @@ Notification dropdown and methods
 
       observers: [
         'reloadToken(me)',
-        '_authApp(_firebaseCustomToken)'
+        '_authApp(_firebaseCustomToken)',
+        '_notificationsChanged(notifications, notifications.*)'
       ],
+
+      _notificationsChanged(notifications) {
+        var arr = []
+        notifications.forEach((e) => arr.push(e))
+        arr.reverse()
+        this.set('notificationsSorted', arr)
+      },
 
       _authApp(firebaseCustomToken) {
         if (!firebaseCustomToken || firebaseCustomToken == '') return
