@@ -1,0 +1,149 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
+
+
+<link rel="import" href="../polymerfire/firebase-document.html">
+
+<!-- Elfy -->
+<link rel="import" href="../ee-helper-behavior/ee-helper-behavior.html">
+<link rel="import" href="../ee-shared-styles/shared-styles.html">
+<link rel="import" href="../ee-avatar/ee-avatar.html">
+
+<dom-module id="notification-row">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+
+      #readIndicator.read {
+        opacity: 0.1;
+        color: black;
+      }
+
+      #readIndicator {
+        opacity: 0.8;
+        color: blue;
+      }
+
+      #row:hover > #readIndicator {
+        opacity: 1;
+      }
+
+      #row {
+        height: 52px;
+        border: 1px solid #eee;
+        padding: 6px 30px 5px 12px;
+        margin-top: -1px;
+      }
+
+      .sub-title {
+        opacity: 0.3;
+      }
+
+      .image {
+        margin-right: 12px;
+      }
+    </style>
+
+
+    <div id="row" class="h-c">
+      <template is="dom-if" if="[[isInbox]]" restamp="true">
+        <div class="inbox h-c full-width clickable" on-tap="openUrl">
+          <ee-avatar class="image" src="[[notification.sender_avatar]]"
+            fallback="/images/default/avatar.jpg"
+            size="52"
+            shape="square"
+            no-change>
+          </ee-avatar>
+          <div class="v space">
+            <div class="title">Mama</div>
+            <div class="sub-title">by mum</div>
+          </div>
+        </div>
+      </template>
+      <template is="dom-if" if="[[!isInbox]]" restamp="true">
+
+      </template>
+      <div id="readIndicator" class$="[[_ifThenElse(notification.read, 'clickable p read', 'clickable p')]]" on-tap="markAsRead">&#9679;</div>
+      <paper-tooltip for="readIndicator" offset="0" position="top">Mark as read</paper-tooltip>
+    </div>
+
+    <firebase-document
+      id="document"
+      app=[[app]]
+      path=[[_documentPath]]
+      data="{{notification}}">
+    </firebase-document>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'notification-row',
+
+      behaviors: [
+        Elfy.EEHelperBehavior,
+      ],
+
+      properties: {
+
+        app: {
+          type: Object,
+        },
+
+        isInbox: {
+          type: Boolean,
+          value: false,
+          computed: '_isInboxType(notification)'
+        },
+
+        notification: {
+          type: Object,
+          notify: true
+        },
+
+        key: {
+          type: String,
+          value: '',
+        },
+
+        me: {
+          type: Object,
+          value() { return {} },
+        },
+
+        path: {
+          type: String,
+          value: '',
+        },
+
+        _documentPath: {
+          type: String,
+          computed: '_computeDocumentPath(path,key)',
+        },
+      },
+
+      _computeDocumentPath(path,key) {
+        return path + '/' + key
+      },
+
+      markAsRead() {
+        this.set('notification.read', true)
+      },
+
+      openUrl() {
+        this.markAsRead()
+      },
+
+      _isRead() {
+        if (!this.notification) return false
+        return this.notification.read
+      },
+
+      _isInboxType(n) {
+        return n && n.type == 'inbox'
+      }
+    });
+  </script>
+</dom-module>

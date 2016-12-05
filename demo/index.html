@@ -1,28 +1,36 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+ <html>
+   <head>
+     <title>ee-notification demo</title>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <title>ee-notification demo</title>
+     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+     <link rel="import" href="../../demo-models/demo-models.html">
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../ee-notification.html">
+     <link rel="import" href="../ee-notification.html">
 
-    <style is="custom-style" include="demo-pages-shared-styles">
-    </style>
-  </head>
-  <body>
-    <div class="vertical-section-container centered">
-      <h3>Basic ee-notification demo</h3>
-      <demo-snippet>
-        <template>
-          <ee-notification></ee-notification>
-        </template>
-      </demo-snippet>
-    </div>
-  </body>
-</html>
+     <style is="custom-style" include="demo-pages-shared-styles">
+     </style>
+   </head>
+   <body>
+
+     <div class="vertical-section-container centered">
+       <h3>ee-notification Demo</h3>
+       <demo-snippet>
+         <template>
+           <demo-models>
+             <ee-notification class="me"
+              api-key="AIzaSyCG3wFd5r2wGfkrTxg7uLEkezobP9dPqRs"
+              database-url="https://elfycaresdev.firebaseio.com/"
+              auth-domain="elfycaresdev.firebaseapp.com"></ee-notification>
+           </demo-models>
+         </template>
+       </demo-snippet>
+     </div>
+
+   </body>
+ </html>
