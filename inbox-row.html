@@ -10,7 +10,7 @@
 <link rel="import" href="../ee-shared-styles/shared-styles.html">
 <link rel="import" href="../ee-avatar/ee-avatar.html">
 
-<dom-module id="notification-row">
+<dom-module id="inbox-row">
   <template>
     <style include="shared-styles">
       :host {
@@ -47,40 +47,41 @@
       }
     </style>
 
-
     <div id="row" class="h-c">
-      <template is="dom-if" if="[[isInbox]]" restamp="true">
-        <div class="inbox h-c full-width clickable" on-tap="openUrl">
-          <ee-avatar class="image" src="[[notification.sender_avatar]]"
-            fallback="/images/default/avatar.jpg"
-            size="52"
-            shape="square"
-            no-change>
-          </ee-avatar>
-          <div class="v space">
-            <div class="title">Mama</div>
-            <div class="sub-title">[[notification.created_at]]</div>
-          </div>
+      <div class="inbox h-c full-width clickable" on-tap="openUrl">
+        <ee-avatar class="image" src="[[channel.sender_avatar]]"
+          fallback="/images/default/avatar.jpg"
+          size="52"
+          shape="square"
+          no-change>
+        </ee-avatar>
+        <div class="v space">
+          <div class="title">Mama</div>
+          <div class="sub-title">[[channel.last_notification]]</div>
         </div>
-      </template>
-      <template is="dom-if" if="[[!isInbox]]" restamp="true">
-
-      </template>
-      <div id="readIndicator" class$="[[_ifThenElse(notification.read, 'clickable p read', 'clickable p')]]" on-tap="markAsRead">&#9679;</div>
+      </div>
+      <div id="readIndicator" class$="[[_ifThenElse(channel.read, 'clickable p read', 'clickable p')]]" on-tap="markAsRead">&#9679;</div>
       <paper-tooltip for="readIndicator" offset="0" position="top">Mark as read</paper-tooltip>
     </div>
 
+    <firebase-query
+      id="query"
+      app="[[app]]"
+      path="[[_documentPath]]"
+      data="{{notifications}}"
+      disabled="[[!signedIn]]"
+      limit-to-last="100">
+    </firebase-query>
+
     <firebase-document
       id="document"
-      app=[[app]]
-      path=[[_documentPath]]
-      data="{{notification}}">
+      app=[[app]]>
     </firebase-document>
 
   </template>
   <script>
     Polymer({
-      is: 'notification-row',
+      is: 'inbox-row',
 
       behaviors: [
         Elfy.EEHelperBehavior,
@@ -92,18 +93,18 @@
           type: Object,
         },
 
-        isInbox: {
-          type: Boolean,
-          value: false,
-          computed: '_isInboxType(notification)'
+        channel: {
+          type: Object,
+          value() { return {} },
+          computed: '_computeChannelData(notifications, notifications.*)'
         },
 
-        notification: {
+        notifications: {
           type: Object,
           notify: true
         },
 
-        key: {
+        channelKey: {
           type: String,
           value: '',
         },
@@ -120,8 +121,24 @@
 
         _documentPath: {
           type: String,
-          computed: '_computeDocumentPath(path,key)',
+          computed: '_computeDocumentPath(path,channelKey)',
         },
+      },
+
+      _computeChannelData(notifications) {
+        if (!notifications || notifications.length <1) return {}
+        var read = notifications.filter((e) => !e.read).length == 0
+        var sender_avatar = notifications[0].sender_avatar
+        var last_notification = notifications[0].created_at
+        var url = notifications[0].url
+
+        var data = {
+          'read': read,
+          'sender_avatar': sender_avatar,
+          'last_notification': last_notification,
+          'url': url
+        }
+        return data
       },
 
       _computeDocumentPath(path,key) {
@@ -129,10 +146,14 @@
       },
 
       markAsRead() {
-        this.set('notification.read', true)
+        var document = this.$.document
+        for (var i = 0; i < this.notifications.length; i++) {
+          this.set('notifications.' + i + '.read', true)
+        }
       },
 
       openUrl() {
+        this.fire('change-route', this.channel.url)
         this.markAsRead()
       },
 

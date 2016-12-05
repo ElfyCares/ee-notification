@@ -12,12 +12,13 @@
 
 <!-- Paper -->
 <link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../paper-badge/paper-badge.html">
 
 <!-- Third -->
 <link rel="import" href="../polymerfire/firebase-query.html">
 
 <!-- My -->
-<link rel="import" href="notification-row.html">
+<link rel="import" href="inbox-row.html">
 
 <!--
 `ee-notification`
@@ -59,23 +60,35 @@ Notification dropdown and methods
       #list {
         width: 100%;
       }
+
+      paper-badge {
+        --paper-badge-margin-left: -16px;
+        --paper-badge-margin-bottom: -16px
+      }
     </style>
 
-    <paper-icon-button on-tap="_execute" data-args="open,#dropdown" class="dropdown-trigger" icon="communication:chat-bubble"></paper-icon-button>
+    <paper-icon-button
+      id="trigger"
+      on-tap="_execute"
+      data-args="open,#dropdown"
+      class="dropdown-trigger"
+      icon="communication:chat-bubble">
+    </paper-icon-button>
+    <paper-badge for="trigger" label="[[unreadCount]]"></paper-badge>
     <iron-dropdown id="dropdown" horizontal-align="right" vertical-align="top">
       <div class="dropdown-content">
         <div class="dropdown-title h-c">
           <span>Notifications</span>
         </div>
         <div class="notification-list">
-          <iron-list id="list" items="[[notificationsSorted]]" as="notification">
+          <iron-list id="list" items="[[channelsSorted]]" as="channel">
             <template>
-              <notification-row
+              <inbox-row
                 app="[[app]]"
                 me="[[me]]"
-                key="[[notification.$key]]"
+                channel-key="[[channel.$key]]"
                 path="[[_notificationPath]]">
-              </notification-row>
+              </inbox-row>
             </template>
           </iron-list>
         </div>
@@ -86,7 +99,7 @@ Notification dropdown and methods
       id="query"
       app="[[app]]"
       path="[[_notificationPath]]"
-      data="{{notifications}}"
+      data="{{channels}}"
       disabled="[[!signedIn]]"
       limit-to-last="200"
       order-by-child="created_at">
@@ -105,17 +118,22 @@ Notification dropdown and methods
 
       properties: {
 
+        unreadCount: {
+          type: Number,
+          value: 0,
+        },
+
         firebaseApp: {
           type: Object,
           value() { return {} },
         },
 
-        notifications: {
+        channels: {
           type: Array,
           value() { return [] },
         },
 
-        notificationsSorted: {
+        channelsSorted: {
           type: Array,
           value() { return [] },
         },
@@ -143,18 +161,36 @@ Notification dropdown and methods
       },
 
       observers: [
-        '_notificationsChanged(notifications, notifications.*)'
+        '_notificationsChanged(channels, channels.*)'
       ],
 
-      _notificationsChanged(notifications) {
+      _notificationsChanged(channels) {
         var arr = []
-        notifications.forEach((e) => arr.push(e))
-        arr.reverse()
-        this.set('notificationsSorted', arr)
-      },
+        channels.forEach((e) => arr.push(e))
 
-      _getDocumentPath(key) {
-        return this._notificationPath + '/' + key
+        arr.sort(function(a,b) {
+          var arrA = this._arrayFromObject(a)
+          arrA.sort(function(c,d) { return (c[1].created_at > d[1].created_at) ? 1 : -1 })
+
+          var arrB = this._arrayFromObject(a)
+          arrB.sort(function(e,f) { return (e[1].created_at > f[1].created_at) ? 1 : -1 })
+
+          return (arrA[0][1].created_at > arrB[0][1].created_at) ? 1 : -1
+        })
+
+        var unreadCount  = 0
+        arr.forEach((c) => {
+          var notifications = this._arrayFromObject(c)
+          notifications.forEach((n)=> {
+
+            if (typeof n[1] === 'object' && !n[1].read) {
+              unreadCount ++
+            }
+          })
+        })
+
+        this.unreadCount = unreadCount
+        this.set('channelsSorted', arr)
       },
 
       _computeNotificationPath(me) {

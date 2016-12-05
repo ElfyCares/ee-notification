@@ -12,12 +12,13 @@
 
 <!-- Paper -->
 <link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../paper-badge/paper-badge.html">
 
 <!-- Third -->
 <link rel="import" href="../polymerfire/firebase-query.html">
 
 <!-- My -->
-<link rel="import" href="notification-row.html">
+<link rel="import" href="generic-row.html">
 
 
 <!--
@@ -60,9 +61,16 @@ Notification dropdown and methods
       #list {
         width: 100%;
       }
+
+      paper-badge {
+        --paper-badge-margin-left: -16px;
+        --paper-badge-margin-bottom: -16px
+      }
     </style>
 
-    <paper-icon-button on-tap="_execute" data-args="open,#dropdown" class="dropdown-trigger" icon="social:public"></paper-icon-button>
+    <paper-icon-button id="trigger" on-tap="_execute" data-args="open,#dropdown" class="dropdown-trigger" icon="social:public"></paper-icon-button>
+    <paper-badge for="trigger" label="[[unreadCount]]"></paper-badge>
+
     <iron-dropdown id="dropdown" horizontal-align="right" vertical-align="top">
       <div class="dropdown-content">
         <div class="dropdown-title h-c">
@@ -71,12 +79,12 @@ Notification dropdown and methods
         <div class="notification-list">
           <iron-list id="list" items="[[notificationsSorted]]" as="notification">
             <template>
-              <notification-row
+              <generic-row
                 app="[[app]]"
                 me="[[me]]"
                 key="[[notification.$key]]"
                 path="[[_notificationPath]]">
-              </notification-row>
+              </generic-row>
             </template>
           </iron-list>
         </div>
@@ -151,6 +159,9 @@ Notification dropdown and methods
         var arr = []
         notifications.forEach((e) => arr.push(e))
         arr.reverse()
+
+        var unread = arr.filter((e) => !e.read)
+        this.unreadCount = unread.length
         this.set('notificationsSorted', arr)
       },
 
@@ -160,7 +171,7 @@ Notification dropdown and methods
 
       _computeNotificationPath(me) {
         if (!me || !me.id) return
-        return '/users/' + me.id + '/notifications'
+        return '/users/' + me.id + '/notifications/generic'
       }
 
     });

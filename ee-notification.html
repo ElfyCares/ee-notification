@@ -31,14 +31,21 @@ Notification dropdown and methods
       user="{{firebaseUser}}"
       app="[[firebaseApp]]"
       provider="google"
-      signed-in="{{signedIn}}">
+      signed-in="{{signedIn}}"
+      on-change-route="_changeRoute">
     </firebase-auth>
 
-    <ee-generic-notification me="[[me]]"
-     firebase-app="[[firebaseApp]]" signed-in="[[signedIn]]"></ee-generic-notification>
+    <template is="dom-if" if="[[generic]]" restamp="true">
+      <ee-generic-notification me="[[me]]"
+       firebase-app="[[firebaseApp]]" signed-in="[[signedIn]]"></ee-generic-notification>
+    </template>
 
-     <ee-inbox-notification me="[[me]]"
-      firebase-app="[[firebaseApp]]" signed-in="[[signedIn]]"></ee-inbox-notification>
+    <template is="dom-if" if="[[inbox]]" restamp="true">
+      <ee-inbox-notification me="[[me]]"
+       firebase-app="[[firebaseApp]]"
+       signed-in="[[signedIn]]"
+       on-change-route="_changeRoute"></ee-inbox-notification>
+    </template>
 
   </template>
   <script>
@@ -64,6 +71,16 @@ Notification dropdown and methods
         me: {
           type: Object,
           value() { return {} },
+        },
+
+        generic: {
+          type: Boolean,
+          value: false,
+        },
+
+        inbox: {
+          type: Boolean,
+          value: false,
         },
 
         _firebaseCustomToken: {
@@ -92,6 +109,11 @@ Notification dropdown and methods
           console.error(error)
         });
       },
+
+      _changeRoute(e) {
+        var route = e.detail
+        this.fire('route-path-change', route)
+      }
 
     });
   </script>
