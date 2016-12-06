@@ -55,8 +55,9 @@ Notification dropdown and methods
          firebase-app="[[firebaseApp]]"
          signed-in="[[signedIn]]"
          on-change-route="_changeRoute"
-         auto-read-channel-id="[[autoReadChannelId]]"
-         disable-auto-read-channel="[[disableAutoReadChannel]]">
+         chat-channel-id="[[chatChannelId]]"
+         chat-is-open="[[chatIsOpen]]"
+         on-open-chat="_openChat">
         </ee-inbox-notification>
       </template>
     </div>
@@ -82,13 +83,14 @@ Notification dropdown and methods
           value: '',
         },
 
-        autoReadChannelId: {
+        chatChannelId: {
           type: Number,
         },
 
-        disableAutoReadChannel: {
+        chatIsOpen: {
           type: Boolean,
-          value: false
+          value: false,
+          notify: true
         },
 
         me: {
@@ -137,6 +139,13 @@ Notification dropdown and methods
           var errorMessage = error.message;
           console.error(error)
         });
+      },
+
+      _openChat(e) {
+        // open chat
+        this.async(function() {
+          this.chatIsOpen = true
+        }.bind(this),100)
       },
 
       _changeRoute(e) {

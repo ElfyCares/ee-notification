@@ -124,11 +124,11 @@ Notification dropdown and methods
           value() { return {} },
         },
 
-        autoReadChannelId: {
+        chatChannelId: {
           type: Number,
         },
 
-        disableAutoReadChannel: {
+        chatIsOpen: {
           type: Boolean,
           value: false
         },
@@ -173,11 +173,11 @@ Notification dropdown and methods
 
       observers: [
         '_notificationsChanged(channels, channels.*)',
-        '_autoRead(autoReadChannelId, disableAutoReadChannel, channels, channels.*)'
+        '_autoRead(chatChannelId, chatIsOpen, channels, channels.*)'
       ],
 
-      _autoRead(autoReadChannelId, disableAutoReadChannel, channels) {
-        if (disableAutoReadChannel || !autoReadChannelId) return
+      _autoRead(autoReadChannelId, chatIsOpen, channels) {
+        if (!chatIsOpen || !autoReadChannelId) return
 
         var channelToAutoReadIndex
         var channelToAutoRead
@@ -207,11 +207,12 @@ Notification dropdown and methods
         var arr = []
         channels.forEach((e) => arr.push(e))
 
+        var self = this
         arr.sort(function(a,b) {
-          var arrA = this._arrayFromObject(a)
+          var arrA = self._arrayFromObject(a)
           arrA.sort(function(c,d) { return (c[1].created_at > d[1].created_at) ? 1 : -1 })
 
-          var arrB = this._arrayFromObject(a)
+          var arrB = self._arrayFromObject(a)
           arrB.sort(function(e,f) { return (e[1].created_at > f[1].created_at) ? 1 : -1 })
 
           return (arrA[0][1].created_at > arrB[0][1].created_at) ? 1 : -1

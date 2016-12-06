@@ -2,15 +2,14 @@
 
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 
-
-<link rel="import" href="../polymerfire/firebase-document.html">
+<link rel="import" href="../polymerfire/firebase-query.html">
 
 <!-- Elfy -->
 <link rel="import" href="../ee-helper-behavior/ee-helper-behavior.html">
 <link rel="import" href="../ee-shared-styles/shared-styles.html">
 <link rel="import" href="../ee-avatar/ee-avatar.html">
 
-<dom-module id="generic-row">
+<dom-module id="inbox-row">
   <template>
     <style include="shared-styles">
       :host {
@@ -47,35 +46,36 @@
       }
     </style>
 
-
     <div id="row" class="h-c">
-        <div class="inbox h-c full-width clickable" on-tap="openUrl">
-          <ee-avatar class="image" src="[[notification.sender_avatar]]"
-            fallback="/images/default/avatar.jpg"
-            size="52"
-            shape="square"
-            no-change>
-          </ee-avatar>
-          <div class="v space">
-            <div class="title">Mama</div>
-            <div class="sub-title">[[notification.created_at]]</div>
-          </div>
+      <div class="inbox h-c full-width clickable" on-tap="openUrl">
+        <ee-avatar class="image" src="[[channel.sender_avatar]]"
+          fallback="/images/default/avatar.jpg"
+          size="52"
+          shape="square"
+          no-change>
+        </ee-avatar>
+        <div class="v space">
+          <div class="title">Mama</div>
+          <div class="sub-title">[[channel.last_notification]]</div>
         </div>
-      <div id="readIndicator" class$="[[_ifThenElse(notification.read, 'clickable p read', 'clickable p')]]" on-tap="markAsRead">&#9679;</div>
+      </div>
+      <div id="readIndicator" class$="[[_ifThenElse(channel.read, 'clickable p read', 'clickable p')]]" on-tap="markAsRead">&#9679;</div>
       <paper-tooltip for="readIndicator" offset="0" position="top">Mark as read</paper-tooltip>
     </div>
 
-    <firebase-document
-      id="document"
-      app=[[app]]
-      path=[[_documentPath]]
-      data="{{notification}}">
-    </firebase-document>
+    <firebase-query
+      id="query"
+      app="[[firebaseApp]]"
+      path="[[_documentPath]]"
+      data="{{notifications}}"
+      order-by-child="created_at"
+      limit-to-last="100">
+    </firebase-query>
 
   </template>
   <script>
     Polymer({
-      is: 'generic-row',
+      is: 'inbox-row',
 
       behaviors: [
         Elfy.EEHelperBehavior,
@@ -83,24 +83,29 @@
 
       properties: {
 
-        app: {
+        firebaseApp: {
           type: Object,
         },
 
-        isInbox: {
+        signedIn: {
           type: Boolean,
           value: false,
-          computed: '_isInboxType(notification)'
+          notify: true,
         },
 
-        notification: {
+        channel: {
           type: Object,
-          notify: true
+          value() { return {} },
+          computed: '_computeChannelData(notifications, notifications.*)'
         },
 
-        key: {
+        notifications: {
+          type: Array,
+          value() { return [] },
+        },
+
+        channelKey: {
           type: String,
-          value: '',
         },
 
         me: {
@@ -110,24 +115,45 @@
 
         path: {
           type: String,
-          value: '',
         },
 
         _documentPath: {
           type: String,
-          computed: '_computeDocumentPath(path,key)',
+          computed: '_computeDocumentPath(path,channelKey)',
         },
       },
 
+      _computeChannelData(notifications) {
+        if (!notifications || notifications.length <1) return {}
+        var read = notifications.filter((e) => !e.read).length == 0
+        var sender_avatar = notifications[0].sender_avatar
+        var last_notification = notifications[0].created_at
+        var url = notifications[0].url
+
+        var data = {
+          'read': read,
+          'sender_avatar': sender_avatar,
+          'last_notification': last_notification,
+          'url': url
+        }
+        return data
+      },
+
       _computeDocumentPath(path,key) {
+        if (!path || !key) return
         return path + '/' + key
       },
 
       markAsRead() {
-        this.set('notification.read', true)
+        for (var i = 0; i < this.notifications.length; i++) {
+          this.set('notifications.' + i + '.read', true)
+        }
       },
 
       openUrl() {
+        if (!this.channel.url) return
+        this.fire('change-route', this.channel.url)
+        this.fire('open-chat')
         this.markAsRead()
       },
 
