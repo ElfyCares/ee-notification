@@ -24,6 +24,7 @@ Notification dropdown and methods
     <style include="shared-styles"></style>
 
     <firebase-app
+      app-name="elfy-notification"
       auth-domain="[[authDomain]]"
       database-url="[[databaseUrl]]"
       api-key="[[apiKey]]"
@@ -94,6 +95,12 @@ Notification dropdown and methods
         generic: {
           type: Boolean,
           value: false,
+        },
+
+        signedIn: {
+          type: Boolean,
+          value: false,
+          notify: true,
         },
 
         inbox: {

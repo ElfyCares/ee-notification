@@ -84,10 +84,11 @@ Notification dropdown and methods
           <iron-list id="list" items="[[channelsSorted]]" as="channel">
             <template>
               <inbox-row
-                app="[[app]]"
+                firebase-app="[[firebaseApp]]"
                 me="[[me]]"
                 channel-key="[[channel.$key]]"
-                path="[[_notificationPath]]">
+                path="[[_notificationPath]]"
+                signed-in="[[signedIn]]">
               </inbox-row>
             </template>
           </iron-list>
@@ -97,11 +98,11 @@ Notification dropdown and methods
 
     <firebase-query
       id="query"
-      app="[[app]]"
+      app="[[firebaseApp]]"
       path="[[_notificationPath]]"
       data="{{channels}}"
       disabled="[[!signedIn]]"
-      limit-to-last="200"
+      limit-to-last="100"
       order-by-child="created_at">
     </firebase-query>
 
@@ -160,6 +161,7 @@ Notification dropdown and methods
         signedIn: {
           type: Boolean,
           value: false,
+          notify: true,
         },
 
         _notificationPath: {
@@ -181,12 +183,12 @@ Notification dropdown and methods
         var channelToAutoRead
 
         channels.forEach((e,i) => {
-          if (e.$key == autoReadChannelId) {
+          if (e.$key == autoReadChannelId.toString()) {
             channelToAutoReadIndex = i
             channelToAutoRead = e
           }
         })
-        if (!channelToAutoRead || channelToAutoReadIndex) return
+        if (!channelToAutoRead) return
 
         var notifications = this._arrayFromObject(channelToAutoRead)
 

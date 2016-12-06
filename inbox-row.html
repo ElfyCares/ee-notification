@@ -2,8 +2,7 @@
 
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 
-
-<link rel="import" href="../polymerfire/firebase-document.html">
+<link rel="import" href="../polymerfire/firebase-query.html">
 
 <!-- Elfy -->
 <link rel="import" href="../ee-helper-behavior/ee-helper-behavior.html">
@@ -66,17 +65,12 @@
 
     <firebase-query
       id="query"
-      app="[[app]]"
+      app="[[firebaseApp]]"
       path="[[_documentPath]]"
       data="{{notifications}}"
-      disabled="[[!signedIn]]"
+      order-by-child="created_at"
       limit-to-last="100">
     </firebase-query>
-
-    <firebase-document
-      id="document"
-      app=[[app]]>
-    </firebase-document>
 
   </template>
   <script>
@@ -89,8 +83,14 @@
 
       properties: {
 
-        app: {
+        firebaseApp: {
           type: Object,
+        },
+
+        signedIn: {
+          type: Boolean,
+          value: false,
+          notify: true,
         },
 
         channel: {
@@ -100,13 +100,12 @@
         },
 
         notifications: {
-          type: Object,
-          notify: true
+          type: Array,
+          value() { return [] },
         },
 
         channelKey: {
           type: String,
-          value: '',
         },
 
         me: {
@@ -116,7 +115,6 @@
 
         path: {
           type: String,
-          value: '',
         },
 
         _documentPath: {
@@ -142,17 +140,18 @@
       },
 
       _computeDocumentPath(path,key) {
+        if (!path || !key) return
         return path + '/' + key
       },
 
       markAsRead() {
-        var document = this.$.document
         for (var i = 0; i < this.notifications.length; i++) {
           this.set('notifications.' + i + '.read', true)
         }
       },
 
       openUrl() {
+        if (!this.channel.url) return
         this.fire('change-route', this.channel.url)
         this.markAsRead()
       },
