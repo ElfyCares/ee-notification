@@ -78,7 +78,7 @@ Notification dropdown and methods
     <iron-dropdown id="dropdown" horizontal-align="right" vertical-align="top">
       <div class="dropdown-content">
         <div class="dropdown-title h-c">
-          <span>Notifications</span>
+          <span>Inbox</span>
         </div>
         <div class="notification-list">
           <iron-list id="list" items="[[channelsSorted]]" as="channel">
@@ -210,12 +210,16 @@ Notification dropdown and methods
         var self = this
         arr.sort(function(a,b) {
           var arrA = self._arrayFromObject(a)
-          arrA.sort(function(c,d) { return (c[1].created_at > d[1].created_at) ? 1 : -1 })
+          arrA.sort(function(c,d) {
+            return (c[1].created_at > d[1].created_at) ? -1 : 1
+          })
+          arrA = arrA.filter((e) => e[1].created_at)
 
-          var arrB = self._arrayFromObject(a)
-          arrB.sort(function(e,f) { return (e[1].created_at > f[1].created_at) ? 1 : -1 })
+          var arrB = self._arrayFromObject(b)
+          arrB.sort(function(e,f) { return (e[1].created_at > f[1].created_at) ? -1 : 1 })
+          arrB = arrB.filter((e) => e[1].created_at)
 
-          return (arrA[0][1].created_at > arrB[0][1].created_at) ? 1 : -1
+          return (arrA[0][1].created_at > arrB[0][1].created_at) ? -1 : 1
         })
 
         var unreadCount  = 0
