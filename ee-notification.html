@@ -21,7 +21,11 @@ Notification dropdown and methods
 
 <dom-module id="ee-notification">
   <template>
-    <style include="shared-styles"></style>
+    <style include="shared-styles">
+      :host {
+        color: var(--primary-text-color, #7e7e7e);
+      }
+    </style>
 
     <firebase-app
       app-name="elfy-notification"
