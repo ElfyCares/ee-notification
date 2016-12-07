@@ -130,9 +130,11 @@
       },
 
       _computeChannelData(notifications) {
-        if (!notifications || notifications.length <1) return {}
+        if (!notifications) return {}
         // only objects with created_at attribute
         notifications = notifications.filter((n) => n.created_at)
+
+        if (notifications.length<1) return {}
 
         notifications.sort(function(a,b) { return a.created_at > b.created_at ? -1 : 1 })
         var read = notifications.filter((e) => !e.read).length == 0

@@ -124,7 +124,7 @@
       },
 
       _computeChannelData(notifications) {
-        if (!notifications || notifications.length <1) return {}
+        if (!notifications || notifications.length<1) return {}
         var read = notifications.filter((e) => !e.read).length == 0
         var sender_avatar = notifications[0].sender_avatar
         var last_notification = notifications[0].created_at
