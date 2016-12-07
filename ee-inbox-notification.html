@@ -199,7 +199,9 @@ Notification dropdown and methods
           }
         })
         keys.forEach((k) => {
-          this.set('channels.' + channelToAutoReadIndex + '.' + k + '.read', true)
+          if (k.startsWith('-')) {
+            this.set('channels.' + channelToAutoReadIndex + '.' + k + '.read', true)
+          }    
         })
       },
 

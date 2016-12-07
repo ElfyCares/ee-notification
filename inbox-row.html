@@ -159,7 +159,9 @@
 
       markAsRead() {
         for (var i = 0; i < this.notifications.length; i++) {
-          this.set('notifications.' + i + '.read', true)
+          if (this.notifications[i].$key.startsWith('-')) {
+            this.set('notifications.' + i + '.read', true)
+          }
         }
       },
 
