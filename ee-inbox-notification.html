@@ -103,7 +103,7 @@ Notification dropdown and methods
       data="{{channels}}"
       disabled="[[!signedIn]]"
       limit-to-last="100"
-      order-by-child="created_at">
+      order-by-child="last_update">
     </firebase-query>
 
   </template>
@@ -130,7 +130,7 @@ Notification dropdown and methods
 
         chatIsOpen: {
           type: Boolean,
-          value: false
+          value: false,
         },
 
         unreadCount: {
