@@ -124,8 +124,8 @@ Notification dropdown and methods
         '_authApp(_firebaseCustomToken)',
       ],
 
-      reloadToken() {
-        if (!this._firebaseCustomToken || this._firebaseCustomToken == '') return
+      reloadToken(me) {
+        if (!me || !me.id) return
         App.NotificationSetting.findAll().then((settings) => {
           this._firebaseCustomToken = settings.firebaseCustomToken
         })
