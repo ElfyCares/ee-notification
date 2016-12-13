@@ -38,6 +38,11 @@
       }
 
       .sub-title {
+        font-size: 0.8em;
+      }
+
+      .sub-sub-title {
+        font-size: 0.7em;
         opacity: 0.3;
       }
 
@@ -57,7 +62,7 @@
         <div class="v space">
           <div class="title">[[notification.title]]</div>
           <div class="sub-title">[[notification.sub_title]]</div>
-          <div class="sub-sub-title">[[_humanizeBetweenDateAndNow(notification.created_at)]]</div>
+          <div class="sub-sub-title">[[_humanizeBetweenDateAndNow(notification.created_at, 'YYYY-MM-DDTHH:mm:ss')]]</div>
         </div>
       </div>
       <div id="readIndicator" class$="[[_ifThenElse(notification.read, 'clickable p read', 'clickable p')]]" on-tap="markAsRead">&#9679;</div>
