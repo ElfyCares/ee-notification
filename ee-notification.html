@@ -46,12 +46,17 @@ Notification dropdown and methods
 
     <div class="h-c">
       <template is="dom-if" if="[[generic]]" restamp="true">
-        <ee-generic-notification me="[[me]]"
-         firebase-app="[[firebaseApp]]" signed-in="[[signedIn]]"></ee-generic-notification>
+        <ee-generic-notification
+          me="[[me]]"
+          firebase-app="[[firebaseApp]]"
+          signed-in="[[signedIn]]"
+          on-change-route="_changeRoute">
+        </ee-generic-notification>
       </template>
 
       <template is="dom-if" if="[[inbox]]" restamp="true">
-        <ee-inbox-notification me="[[me]]"
+        <ee-inbox-notification
+         me="[[me]]"
          firebase-app="[[firebaseApp]]"
          signed-in="[[signedIn]]"
          on-change-route="_changeRoute"

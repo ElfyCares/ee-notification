@@ -80,7 +80,7 @@ Notification dropdown and methods
           <iron-list id="list" items="[[notificationsSorted]]" as="notification">
             <template>
               <generic-row
-                app="[[app]]"
+                app="[[firebaseApp]]"
                 me="[[me]]"
                 key="[[notification.$key]]"
                 base-path="[[_notificationPath]]">
@@ -92,8 +92,8 @@ Notification dropdown and methods
     </iron-dropdown>
 
     <firebase-query
-      id="query"
-      app="[[app]]"
+      id="query2"
+      app="[[firebaseApp]]"
       path="[[_notificationPath]]"
       data="{{notifications}}"
       disabled="[[!signedIn]]"
@@ -114,9 +114,19 @@ Notification dropdown and methods
 
       properties: {
 
+        me: {
+          type: Object,
+          value() { return {} },
+        },
+
         firebaseApp: {
           type: Object,
           value() { return {} },
+        },
+
+        signedIn: {
+          type: Boolean,
+          value: false,
         },
 
         notifications: {
@@ -132,16 +142,6 @@ Notification dropdown and methods
         firebaseUser: {
           type: Object,
           value() { return {} },
-        },
-
-        me: {
-          type: Object,
-          value() { return {} },
-        },
-
-        signedIn: {
-          type: Boolean,
-          value: false,
         },
 
         _notificationPath: {
