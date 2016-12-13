@@ -83,7 +83,7 @@ Notification dropdown and methods
                 app="[[app]]"
                 me="[[me]]"
                 key="[[notification.$key]]"
-                path="[[_notificationPath]]">
+                base-path="[[_notificationPath]]">
               </generic-row>
             </template>
           </iron-list>
@@ -163,10 +163,6 @@ Notification dropdown and methods
         var unread = arr.filter((e) => !e.read)
         this.unreadCount = unread.length
         this.set('notificationsSorted', arr)
-      },
-
-      _getDocumentPath(key) {
-        return this._notificationPath + '/' + key
       },
 
       _computeNotificationPath(me) {

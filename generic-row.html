@@ -2,7 +2,7 @@
 
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 
-<link rel="import" href="../polymerfire/firebase-query.html">
+<link rel="import" href="../polymerfire/firebase-document.html">
 
 <!-- Elfy -->
 <link rel="import" href="../ee-helper-behavior/ee-helper-behavior.html">
@@ -48,29 +48,28 @@
 
     <div id="row" class="h-c">
       <div class="inbox h-c full-width clickable" on-tap="openUrl">
-        <ee-avatar class="image" src="[[channel.sender_avatar]]"
-          fallback="/images/default/avatar.jpg"
+        <ee-avatar class="image" src="[[notification.image_url]]"
+          fallback="/images/default/generic.jpg"
           size="52"
           shape="square"
           no-change>
         </ee-avatar>
         <div class="v space">
-          <div class="title">Mama</div>
-          <div class="sub-title">[[channel.last_notification]]</div>
+          <div class="title">[[notification.title]]</div>
+          <div class="sub-title">[[notification.sub_title]]</div>
+          <div class="sub-sub-title">[[_humanizeBetweenDateAndNow(notification.created_at)]]</div>
         </div>
       </div>
-      <div id="readIndicator" class$="[[_ifThenElse(channel.read, 'clickable p read', 'clickable p')]]" on-tap="markAsRead">&#9679;</div>
+      <div id="readIndicator" class$="[[_ifThenElse(notification.read, 'clickable p read', 'clickable p')]]" on-tap="markAsRead">&#9679;</div>
       <paper-tooltip for="readIndicator" offset="0" position="top">Mark as read</paper-tooltip>
     </div>
 
-    <firebase-query
+    <firebase-document
       id="query"
       app="[[firebaseApp]]"
       path="[[_documentPath]]"
-      data="{{notifications}}"
-      order-by-child="created_at"
-      limit-to-last="100">
-    </firebase-query>
+      data="{{notification}}">
+    </firebase-document>
 
   </template>
   <script>
@@ -83,6 +82,11 @@
 
       properties: {
 
+        me: {
+          type: Object,
+          value() { return {} },
+        },
+
         firebaseApp: {
           type: Object,
         },
@@ -93,50 +97,23 @@
           notify: true,
         },
 
-        channel: {
+        notification: {
           type: Object,
           value() { return {} },
-          computed: '_computeChannelData(notifications, notifications.*)'
         },
 
-        notifications: {
-          type: Array,
-          value() { return [] },
-        },
-
-        channelKey: {
+        key: {
           type: String,
         },
 
-        me: {
-          type: Object,
-          value() { return {} },
-        },
-
-        path: {
+        basePath: {
           type: String,
         },
 
         _documentPath: {
           type: String,
-          computed: '_computeDocumentPath(path,channelKey)',
+          computed: '_computeDocumentPath(basePath,key)',
         },
-      },
-
-      _computeChannelData(notifications) {
-        if (!notifications || notifications.length<1) return {}
-        var read = notifications.filter((e) => !e.read).length == 0
-        var sender_avatar = notifications[0].sender_avatar
-        var last_notification = notifications[0].created_at
-        var url = notifications[0].url
-
-        var data = {
-          'read': read,
-          'sender_avatar': sender_avatar,
-          'last_notification': last_notification,
-          'url': url
-        }
-        return data
       },
 
       _computeDocumentPath(path,key) {
@@ -145,28 +122,15 @@
       },
 
       markAsRead() {
-        for (var i = 0; i < this.notifications.length; i++) {
-          if (this.notifications[i].$key.startsWith('-')) {
-            this.set('notifications.' + i + '.read', true)
-          }
-        }
+        this.set('notification.read', true)
       },
 
       openUrl() {
-        if (!this.channel.url) return
-        this.fire('change-route', this.channel.url)
+        if (!this.notification.url) return
+        this.fire('change-route', this.notification.url)
         this.fire('open-chat')
         this.markAsRead()
       },
-
-      _isRead() {
-        if (!this.notification) return false
-        return this.notification.read
-      },
-
-      _isInboxType(n) {
-        return n && n.type == 'inbox'
-      }
     });
   </script>
 </dom-module>
