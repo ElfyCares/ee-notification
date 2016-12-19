@@ -37,6 +37,11 @@
         margin-top: -1px;
       }
 
+      .title {
+        font-size: 0.8em;
+        font-weight: 600;
+      }
+
       .sub-title {
         font-size: 0.8em;
       }
@@ -60,8 +65,10 @@
           no-change>
         </ee-avatar>
         <div class="v space">
-          <div class="title">[[channel.sender_name]]</div>
-          <div class="sub-title">regarding visit on [[_formatDateTimeShort(channel.visit_info)]]</div>
+          <div>
+            <span class="title">[[channel.sender_name]]</span>
+            <span class="sub-title">regarding visit on [[_formatDateTimeShort(channel.visit_info)]]</span>
+          </div>
           <div class="sub-sub-title">[[_humanizeBetweenDateAndNow(channel.last_notification)]]</div>
         </div>
       </div>

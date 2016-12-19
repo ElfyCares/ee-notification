@@ -37,6 +37,11 @@
         margin-top: -1px;
       }
 
+      .title {
+        font-size: 0.8em;
+        font-weight: 600;
+      }
+
       .sub-title {
         font-size: 0.8em;
       }
@@ -60,8 +65,10 @@
           no-change>
         </ee-avatar>
         <div class="v space">
-          <div class="title">[[notification.title]]</div>
-          <div class="sub-title">[[notification.sub_title]]</div>
+          <div>
+            <span class="title">[[notification.title]]</span>&nbsp;
+            <span class="sub-title">[[notification.sub_title]]</span>
+          </div>
           <div class="sub-sub-title">[[_humanizeBetweenDateAndNow(notification.created_at, 'YYYY-MM-DDTHH:mm:ss')]]</div>
         </div>
       </div>
