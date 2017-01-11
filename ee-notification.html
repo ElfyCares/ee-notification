@@ -36,14 +36,16 @@ Notification dropdown and methods
       app="{{firebaseApp}}">
     </firebase-app>
 
-    <firebase-auth
-      id="auth"
-      app-name="elfy-notification"
-      user="{{firebaseUser}}"
-      provider="google"
-      signed-in="{{signedIn}}"
-      on-change-route="_changeRoute">
-    </firebase-auth>
+    <template is="dom-if" if="[[firebaseApp]]" restamp="true">
+      <firebase-auth
+        id="auth"
+        app-name="elfy-notification"
+        user="{{firebaseUser}}"
+        provider="google"
+        signed-in="{{signedIn}}"
+        on-change-route="_changeRoute">
+      </firebase-auth>
+    </template>
 
     <div class="h-c">
       <template is="dom-if" if="[[generic]]" restamp="true">
@@ -138,7 +140,7 @@ Notification dropdown and methods
 
       _authApp(firebaseCustomToken) {
         if (!firebaseCustomToken || firebaseCustomToken == '') return
-        this.$.auth.signInWithCustomToken(firebaseCustomToken).catch(function(error) {
+        this.$$('#auth').signInWithCustomToken(firebaseCustomToken).catch(function(error) {
           // Handle Errors here.
           var errorCode = error.code;
           var errorMessage = error.message;
