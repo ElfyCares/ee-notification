@@ -78,7 +78,7 @@
 
     <firebase-query
       id="query"
-      app="[[firebaseApp]]"
+      app-name="elfy-notification"
       path="[[_documentPath]]"
       data="{{notifications}}"
       order-by-child="created_at"
@@ -95,10 +95,6 @@
       ],
 
       properties: {
-
-        firebaseApp: {
-          type: Object,
-        },
 
         signedIn: {
           type: Boolean,

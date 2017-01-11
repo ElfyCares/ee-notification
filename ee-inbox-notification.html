@@ -84,7 +84,6 @@ Notification dropdown and methods
           <iron-list id="list" items="[[channelsSorted]]" as="channel">
             <template>
               <inbox-row
-                firebase-app="[[firebaseApp]]"
                 me="[[me]]"
                 channel-key="[[channel.$key]]"
                 path="[[_notificationPath]]"
@@ -98,7 +97,7 @@ Notification dropdown and methods
 
     <firebase-query
       id="query"
-      app="[[firebaseApp]]"
+      app-name="elfy-notification"
       path="[[_notificationPath]]"
       data="{{channels}}"
       disabled="[[!signedIn]]"
@@ -118,11 +117,6 @@ Notification dropdown and methods
       ],
 
       properties: {
-
-        firebaseApp: {
-          type: Object,
-          value() { return {} },
-        },
 
         chatChannelId: {
           type: Number,
@@ -201,7 +195,7 @@ Notification dropdown and methods
         keys.forEach((k) => {
           if (k.startsWith('-')) {
             this.set('channels.' + channelToAutoReadIndex + '.' + k + '.read', true)
-          }    
+          }
         })
       },
 

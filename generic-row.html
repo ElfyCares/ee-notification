@@ -78,7 +78,7 @@
 
     <firebase-document
       id="query"
-      app="[[firebaseApp]]"
+      app-name="elfy-notification"
       path="[[_documentPath]]"
       data="{{notification}}">
     </firebase-document>
@@ -97,10 +97,6 @@
         me: {
           type: Object,
           value() { return {} },
-        },
-
-        firebaseApp: {
-          type: Object,
         },
 
         signedIn: {

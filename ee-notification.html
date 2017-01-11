@@ -29,7 +29,7 @@ Notification dropdown and methods
 
     <firebase-app
       id="fapp"
-      app-name="elfy-notification"
+      name="elfy-notification"
       auth-domain="[[authDomain]]"
       database-url="[[databaseUrl]]"
       api-key="[[apiKey]]"
@@ -38,6 +38,7 @@ Notification dropdown and methods
 
     <firebase-auth
       id="auth"
+      app-name="elfy-notification"
       user="{{firebaseUser}}"
       provider="google"
       signed-in="{{signedIn}}"
@@ -48,7 +49,6 @@ Notification dropdown and methods
       <template is="dom-if" if="[[generic]]" restamp="true">
         <ee-generic-notification
           me="[[me]]"
-          firebase-app="[[firebaseApp]]"
           signed-in="[[signedIn]]"
           on-change-route="_changeRoute">
         </ee-generic-notification>
@@ -57,7 +57,6 @@ Notification dropdown and methods
       <template is="dom-if" if="[[inbox]]" restamp="true">
         <ee-inbox-notification
          me="[[me]]"
-         firebase-app="[[firebaseApp]]"
          signed-in="[[signedIn]]"
          on-change-route="_changeRoute"
          chat-channel-id="[[chatChannelId]]"
@@ -139,7 +138,6 @@ Notification dropdown and methods
 
       _authApp(firebaseCustomToken) {
         if (!firebaseCustomToken || firebaseCustomToken == '') return
-        this.$.auth.app = this.$.fapp.app
         this.$.auth.signInWithCustomToken(firebaseCustomToken).catch(function(error) {
           // Handle Errors here.
           var errorCode = error.code;

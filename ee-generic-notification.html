@@ -80,7 +80,6 @@ Notification dropdown and methods
           <iron-list id="list" items="[[notificationsSorted]]" as="notification">
             <template>
               <generic-row
-                app="[[firebaseApp]]"
                 me="[[me]]"
                 key="[[notification.$key]]"
                 base-path="[[_notificationPath]]">
@@ -93,7 +92,7 @@ Notification dropdown and methods
 
     <firebase-query
       id="query2"
-      app="[[firebaseApp]]"
+      app-name="elfy-notification"
       path="[[_notificationPath]]"
       data="{{notifications}}"
       disabled="[[!signedIn]]"
@@ -115,11 +114,6 @@ Notification dropdown and methods
       properties: {
 
         me: {
-          type: Object,
-          value() { return {} },
-        },
-
-        firebaseApp: {
           type: Object,
           value() { return {} },
         },
