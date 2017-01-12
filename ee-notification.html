@@ -45,28 +45,28 @@ Notification dropdown and methods
         signed-in="{{signedIn}}"
         on-change-route="_changeRoute">
       </firebase-auth>
+
+      <div class="h-c">
+        <template is="dom-if" if="[[generic]]" restamp="true">
+          <ee-generic-notification
+            me="[[me]]"
+            signed-in="[[signedIn]]"
+            on-change-route="_changeRoute">
+          </ee-generic-notification>
+        </template>
+
+        <template is="dom-if" if="[[inbox]]" restamp="true">
+          <ee-inbox-notification
+           me="[[me]]"
+           signed-in="[[signedIn]]"
+           on-change-route="_changeRoute"
+           chat-channel-id="[[chatChannelId]]"
+           chat-is-open="[[chatIsOpen]]"
+           on-open-chat="_openChat">
+          </ee-inbox-notification>
+        </template>
+      </div>
     </template>
-
-    <div class="h-c">
-      <template is="dom-if" if="[[generic]]" restamp="true">
-        <ee-generic-notification
-          me="[[me]]"
-          signed-in="[[signedIn]]"
-          on-change-route="_changeRoute">
-        </ee-generic-notification>
-      </template>
-
-      <template is="dom-if" if="[[inbox]]" restamp="true">
-        <ee-inbox-notification
-         me="[[me]]"
-         signed-in="[[signedIn]]"
-         on-change-route="_changeRoute"
-         chat-channel-id="[[chatChannelId]]"
-         chat-is-open="[[chatIsOpen]]"
-         on-open-chat="_openChat">
-        </ee-inbox-notification>
-      </template>
-    </div>
 
   </template>
   <script>
