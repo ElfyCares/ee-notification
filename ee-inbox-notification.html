@@ -194,7 +194,7 @@ Notification dropdown and methods
         })
         keys.forEach((k) => {
           if (k.startsWith('-')) {
-            this.set('channels.' + channelToAutoReadIndex + '.' + k + '.read', true)
+            this.set('channels.-c' + channelToAutoReadIndex + '.' + k + '.read', true)
           }
         })
       },
