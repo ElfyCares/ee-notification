@@ -218,6 +218,7 @@ Notification dropdown and methods
           return (arrA[0][1].created_at > arrB[0][1].created_at) ? -1 : 1
         })
 
+        // count unread notifications
         var unreadCount  = 0
         arr.forEach((c) => {
           var notifications = this._arrayFromObject(c)

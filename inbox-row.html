@@ -149,7 +149,7 @@
           'sender_avatar': last_notification.sender_avatar,
           'last_notification': moment(last_notification.created_at, 'YYYY-MM-DDTHH:mm:ss'),
           'sender_name': last_notification.sender_name,
-          'visit_info': moment(last_notification.visit_info, 'YYYY-MM-DDTHH:mm:ss'),
+          'data': last_notification.data,
           'url': last_notification.url
         }
         return data
